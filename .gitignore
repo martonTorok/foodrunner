@@ -43,6 +43,9 @@ jspm_packages/
 # Environment config
 .env
 
+# Dist folder
+dist/
+
 # TypeScript v1 declaration files
 typings/
 
