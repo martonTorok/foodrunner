@@ -10,12 +10,12 @@ export class CartRoutes {
             .get(authenticate, this.cartController.getCartItems);
             
         app.route('/add-to-cart/:id')
-            .get(authenticate, this.cartController.addItemToCard);
+            .post(authenticate, this.cartController.addItemToCard);
 
         app.route('/remove-from-cart/:id')
-            .get(authenticate, this.cartController.removeFromCart);
+            .post(authenticate, this.cartController.removeFromCart);
 
         app.route('/empty-cart')
-            .get(authenticate, this.cartController.emptyCart);
+            .delete(authenticate, this.cartController.emptyCart);
     }
 }
