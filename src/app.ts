@@ -4,12 +4,14 @@ import * as cors from 'cors';
 import { Sequelize } from 'sequelize-typescript';
 import { UserRoutes } from './routes/user.routes';
 import { ItemRoutes } from './routes/item.routes';
+import { CartRoutes } from './routes/cart.routes';
 
 
 class App {
     public app: express.Application;
     private userRoutes: UserRoutes = new UserRoutes();
     private itemRoutes: ItemRoutes = new ItemRoutes();
+    private cartRoutes: CartRoutes = new CartRoutes();
 
     constructor() {
         this.app = express();
@@ -17,6 +19,7 @@ class App {
         this.dbSetup();
         this.userRoutes.routes(this.app);
         this.itemRoutes.routes(this.app);
+        this.cartRoutes.routes(this.app);
     }
 
     public listen(): void {
