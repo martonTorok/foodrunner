@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as jwt from 'jsonwebtoken';
 
-import User from '../models/user.model';
+import * as userService from '../services/user.service';
 
 async function authenticate(request: Request, response: Response, next: NextFunction) {
     if (request.get('x-auth')) {
@@ -10,7 +10,7 @@ async function authenticate(request: Request, response: Response, next: NextFunc
             const id = decoded['id'];
             const expireIn = decoded['exp'];
             const currentTime = Math.round(new Date().getTime() / 1000);
-            const user = await User.findOne({ where: { id } });
+            const user = await userService.getUserById(id);
             if (user && expireIn > currentTime) {
                 request['user'] = user;
                 next();
