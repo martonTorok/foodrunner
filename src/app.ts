@@ -9,6 +9,8 @@ class App {
     
     constructor() {
         this.app = express();
+        this.config();
+        this.dbSetup();
     }
 
     public listen(): void {
