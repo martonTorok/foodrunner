@@ -4,7 +4,7 @@ import Cart from './cart.model';
 import Item from './item.model';
 
 @Table({tableName: 'shoppingCartItems'})
-export default class ItemCart extends Model<ItemCart> {
+export default class CartItem extends Model<CartItem> {
 
     @Column(DataType.FLOAT)
     totalPrice: number;

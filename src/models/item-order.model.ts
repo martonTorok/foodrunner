@@ -4,7 +4,7 @@ import Item from './item.model';
 import Order from './order.model';
 
 @Table({tableName: 'OrderItems'})
-export default class ItemOrder extends Model<ItemOrder> {
+export default class OrderItem extends Model<OrderItem> {
 
     @Column(DataType.FLOAT)
     totalPrice: number;
