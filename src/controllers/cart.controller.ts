@@ -10,10 +10,7 @@ export class CartController {
         try {
             const cart = await cartService.getCart(userId);
             const cartItems = await cartService.getCartItems(cart);
-            let totalPrice = 0;
-            cartItems.forEach(item => {
-                totalPrice += item.totalPrice;
-            })
+            const totalPrice = cartService.getCartTotalPrice(cartItems);
             response.status(200).send({ totalPrice, cartItems });
         } catch (e) {
             response.status(500).send(e);
@@ -26,14 +23,14 @@ export class CartController {
         try {
             const item = await itemService.getItemById(itemId);
             const cart = await cartService.getCart(userId);
-            const itemCart = await cartService.getCartItem(item, cart);
-            if (itemCart === null) {
+            const cartItem = await cartService.getCartItem(item, cart);
+            if (cartItem === null) {
                 await cartService.createCartItem(item, cart);
             } else {
-                await cartService.addCartItem(itemCart, item);
+                await cartService.increaseCartItemQuantity(cartItem, item);
             }
-            const itemsCart = await cartService.getCartItems(cart);
-            response.status(200).send(itemsCart);
+            const cartItems = await cartService.getCartItems(cart);
+            response.status(200).send(cartItems);
         } catch (e) {
             response.status(500).send(e);
         }
@@ -45,14 +42,14 @@ export class CartController {
         try {
             const item = await itemService.getItemById(itemId);
             const cart = await cartService.getCart(userId);
-            const itemCart = await cartService.getCartItem(item, cart);
-            if (itemCart === null) {
+            const cartItem = await cartService.getCartItem(item, cart);
+            if (cartItem === null) {
                 response.status(400).send({ error: `No item: ${itemId} in cart!` })
             } else {
-                await cartService.removeCartItem(itemCart, item);
+                await cartService.decreaseCartItemQuantity(cartItem, item);
             }
-            const itemsCart = await cartService.getCartItems(cart);
-            response.status(200).send(itemsCart);
+            const cartItems = await cartService.getCartItems(cart);
+            response.status(200).send(cartItems);
         } catch (e) {
             response.status(500).send(e);
         }
@@ -63,8 +60,8 @@ export class CartController {
         try {
             const cart = await cartService.getCart(userId);
             await cartService.destroyCartItem(cart);
-            const itemsCart = await cartService.getCartItems(cart);
-            response.status(200).send(itemsCart);
+            const cartItems = await cartService.getCartItems(cart);
+            response.status(200).send(cartItems);
         } catch (e) {
             response.status(500).send(e);
         }
