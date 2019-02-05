@@ -9,7 +9,6 @@ export default class User extends Model<User> {
     @Column
     email: string;
 
-    @Length({ min: 6, max: 16 })
     @Column
     password: string;
 
