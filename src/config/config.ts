@@ -7,6 +7,9 @@ switch (process.env.NODE_ENV) {
         break;
     case "development":
         path = `${__dirname}/development.env`;
-        break
+        break;
+    case "production":
+        path = `src/config/production.env`;
+        break;
 }
 dotenv.config({ path });
