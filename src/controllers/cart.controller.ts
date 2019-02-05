@@ -23,14 +23,25 @@ export class CartController {
         try {
             const item = await itemService.getItemById(itemId);
             const cart = await cartService.getCart(userId);
+            let cartItems = await cartService.getCartItems(cart);
+            let totalPrice = await cartService.getCartTotalPrice(cartItems);
+            //Intentional bug for homework
+            if (cartItems.length > 1 && (totalPrice + item.price) > 10000) {
+                throw new Error('Bug condition fulfilled!');
+            }
+            //----------------------------
+            if ((totalPrice + item.price) > +process.env.CART_UPPER_BOUND) {
+                return response.status(400).send({ error: 'Cart total price exceeded the limit.' });
+            }
             const cartItem = await cartService.getCartItem(item, cart);
             if (cartItem === null) {
                 await cartService.createCartItem(item, cart);
             } else {
                 await cartService.increaseCartItemQuantity(cartItem, item);
             }
-            const cartItems = await cartService.getCartItems(cart);
-            response.status(200).send(cartItems);
+            cartItems = await cartService.getCartItems(cart);
+            totalPrice = cartService.getCartTotalPrice(cartItems);
+            response.status(200).send({ totalPrice, cartItems });
         } catch (e) {
             response.status(500).send(e);
         }
@@ -49,7 +60,8 @@ export class CartController {
                 await cartService.decreaseCartItemQuantity(cartItem, item);
             }
             const cartItems = await cartService.getCartItems(cart);
-            response.status(200).send(cartItems);
+            const totalPrice = cartService.getCartTotalPrice(cartItems);
+            response.status(200).send({ totalPrice, cartItems });
         } catch (e) {
             response.status(500).send(e);
         }
