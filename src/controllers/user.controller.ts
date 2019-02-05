@@ -1,28 +1,23 @@
 import { Response, Request } from 'express';
 import * as _ from 'lodash';
-import * as bcrypt from 'bcryptjs';
-import * as jwt from 'jsonwebtoken';
 
-import User from '../models/user.model';
-import Cart from '../models/cart.model';
+import * as userService from '../services/user.service';
+import * as cartService from '../services/cart.service';
 
 export class UserController {
     public addNewUser = async (request: Request, response: Response) => {
         try {
             let credentials = _.pick(request.body, ['email', 'password']);
-            if (credentials.password.length < 6) { return response.status(400).send({ error: 'Password must be minimum 6 characters long!' }) }
-            if (await User.findOne({ where: { email: credentials.email } })) {
+            if (credentials.password.length < 6) {
+                return response.status(400).send({ error: 'Password must be minimum 6 characters long!' })
+            }
+            if (await userService.getUserByEmail(credentials.email)) {
                 response.status(400).send({ error: `User with email: ${credentials.email} already registered!` })
             } else {
-                credentials.password = await bcrypt.hash(credentials.password, 10);
-                const user = User.build({
-                    email: credentials.email,
-                    password: credentials.password
-                })
-                await user.save();
-                const cart = new Cart({ userId: user.id });
-                await cart.save()
-                const token = this.generateAuthToken(user);
+                credentials.password = await userService.hashPassword(credentials.password);
+                const user = await userService.createUser(credentials.email, credentials.password);
+                const cart = await cartService.createCart(user);
+                const token = userService.generateAuthToken(user);
                 user.password = undefined;
                 response.header('x-auth', token).send(user);
             }
@@ -33,12 +28,11 @@ export class UserController {
 
     public login = async (request: Request, response: Response) => {
         const credentials = request.body;
-        const user = await User.findOne({ where: { email: credentials.email } });
+        const user = await userService.getUserByEmail(credentials.email);
         if (user) {
-            const isPasswordMatching = await bcrypt.compare(credentials.password, user.password);
+            const isPasswordMatching = userService.comparePassword(credentials.password, user);
             if (isPasswordMatching) {
-                user.password = undefined;
-                const token = this.generateAuthToken(user);
+                const token = userService.generateAuthToken(user);
                 response.header('x-auth', token);
                 response.send(user);
             } else {
@@ -48,9 +42,4 @@ export class UserController {
             response.status(401).send({ error: 'Wrong credentials!' })
         }
     }
-
-    private generateAuthToken(user: User) {
-        return jwt.sign({ id: user.id, access: 'auth' }, process.env.JWT_SECRET, { expiresIn: '12h' }).toString();
-    }
-
 }
