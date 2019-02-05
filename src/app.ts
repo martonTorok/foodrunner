@@ -2,15 +2,18 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import { Sequelize } from 'sequelize-typescript';
+import { UserRoutes } from './routes/user.routes';
 
 
 class App {
     public app: express.Application;
+    private userRoutes: UserRoutes = new UserRoutes();
     
     constructor() {
         this.app = express();
         this.config();
         this.dbSetup();
+        this.userRoutes.routes(this.app);
     }
 
     public listen(): void {
