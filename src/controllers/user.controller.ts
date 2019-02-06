@@ -17,9 +17,8 @@ export class UserController {
                 credentials.password = await userService.hashPassword(credentials.password);
                 const user = await userService.createUser(credentials.email, credentials.password);
                 const cart = await cartService.createCart(user);
-                const token = userService.generateAuthToken(user);
                 user.password = undefined;
-                response.header('x-auth', token).send(user);
+                response.send(user);
             }
         } catch (e) {
             response.status(400).send({ error: 'Invalid input' });
@@ -30,11 +29,11 @@ export class UserController {
         const credentials = request.body;
         const user = await userService.getUserByEmail(credentials.email);
         if (user) {
-            const isPasswordMatching = userService.comparePassword(credentials.password, user);
+            const isPasswordMatching = await userService.comparePassword(credentials.password, user);
             if (isPasswordMatching) {
                 const token = userService.generateAuthToken(user);
                 response.header('x-auth', token);
-                response.send(user);
+                response.send({ token });
             } else {
                 response.status(401).send({ error: 'Wrong credentials!' })
             }
