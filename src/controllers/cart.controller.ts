@@ -11,7 +11,8 @@ export class CartController {
             const cart = await cartService.getCart(userId);
             const cartItems = await cartService.getCartItems(cart);
             const totalPrice = cartService.getCartTotalPrice(cartItems);
-            response.status(200).send({ totalPrice, cartItems });
+            const totalQuantity = cartService.getCartNrOfItems(cartItems);
+            response.status(200).send({ totalPrice, totalQuantity, cartItems });
         } catch (e) {
             response.status(500).send(e);
         }
@@ -41,7 +42,8 @@ export class CartController {
             }
             cartItems = await cartService.getCartItems(cart);
             totalPrice = cartService.getCartTotalPrice(cartItems);
-            response.status(200).send({ totalPrice, cartItems });
+            const totalQuantity = cartService.getCartNrOfItems(cartItems);
+            response.status(200).send({ totalPrice, totalQuantity, cartItems });
         } catch (e) {
             response.status(500).send(e);
         }
@@ -61,7 +63,8 @@ export class CartController {
             }
             const cartItems = await cartService.getCartItems(cart);
             const totalPrice = cartService.getCartTotalPrice(cartItems);
-            response.status(200).send({ totalPrice, cartItems });
+            const totalQuantity = cartService.getCartNrOfItems(cartItems);
+            response.status(200).send({ totalPrice, totalQuantity, cartItems });
         } catch (e) {
             response.status(500).send(e);
         }
