@@ -32,6 +32,14 @@ export function getCartTotalPrice(cartItems: CartItem[]): number {
     return totalPrice;
 }
 
+export function getCartNrOfItems(cartItems: CartItem[]): number {
+    let totalQuantity = 0;
+    cartItems.forEach(item => {
+        totalQuantity += item.totalQuantity;
+    })
+    return totalQuantity;
+}
+
 export async function getCartItem(item: Item, cart: Cart): Promise<CartItem> {
     try {
         const cartItem = await CartItem.findOne({
