@@ -5,6 +5,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { UserRoutes } from './routes/user.routes';
 import { ItemRoutes } from './routes/item.routes';
 import { CartRoutes } from './routes/cart.routes';
+import { OrderRoutes } from './routes/order.routes';
 
 
 class App {
@@ -12,6 +13,7 @@ class App {
     private userRoutes: UserRoutes = new UserRoutes();
     private itemRoutes: ItemRoutes = new ItemRoutes();
     private cartRoutes: CartRoutes = new CartRoutes();
+    private orderRoutes: OrderRoutes = new OrderRoutes();
 
     constructor() {
         this.app = express();
@@ -20,6 +22,7 @@ class App {
         this.userRoutes.routes(this.app);
         this.itemRoutes.routes(this.app);
         this.cartRoutes.routes(this.app);
+        this.orderRoutes.routes(this.app);
     }
 
     public listen(): void {
