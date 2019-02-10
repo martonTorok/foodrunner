@@ -18,7 +18,7 @@ export class CartController {
         }
     }
 
-    public async addItemToCard(request: Request, response: Response) {
+    public async addItemToCart(request: Request, response: Response) {
         const userId = request['user'].id;
         const itemId = request.params.id;
         try {
@@ -28,7 +28,8 @@ export class CartController {
             let totalPrice = await cartService.getCartTotalPrice(cartItems);
             //Intentional bug for homework
             if (cartItems.length > 1 && (totalPrice + item.price) > 10000) {
-                throw new Error('Bug condition fulfilled!');
+                response.status(500).send({error: 'Homework Bug condition fulfilled!'})
+                throw new Error('Homework Bug condition fulfilled!');
             }
             //----------------------------
             if ((totalPrice + item.price) > +process.env.CART_UPPER_BOUND) {

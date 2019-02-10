@@ -10,7 +10,7 @@ export class CartRoutes {
             .get(authenticate, this.cartController.getCartItems);
             
         app.route('/add-to-cart/:id')
-            .post(authenticate, this.cartController.addItemToCard);
+            .post(authenticate, this.cartController.addItemToCart);
 
         app.route('/remove-from-cart/:id')
             .post(authenticate, this.cartController.removeFromCart);

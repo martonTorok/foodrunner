@@ -1,4 +1,4 @@
-import { Table, Column, Model, HasMany, IsEmail, Length } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, IsEmail } from 'sequelize-typescript';
 
 import Order from './order.model';
 
